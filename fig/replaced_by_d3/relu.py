@@ -2,8 +2,8 @@
 relu
 ~~~~
 
-Plots a graph of the squashing function used by a rectified linear
-unit."""
+绘制 ReLU（整流线性单元）使用的“压缩”函数曲线。
+"""
 
 import numpy as np
 import matplotlib.pyplot as plt

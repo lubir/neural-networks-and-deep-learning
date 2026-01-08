@@ -2,14 +2,13 @@
 valley
 ~~~~~~
 
-Plots a function of two variables to minimize.  The function is a
-fairly generic valley function."""
+绘制一个待最小化的二维函数（典型的“山谷”形函数）。
+"""
 
-#### Libraries
-# Third party libraries
+#### 依赖库
+# 第三方库
 from matplotlib.ticker import LinearLocator
-# Note that axes3d is not explicitly used in the code, but is needed
-# to register the 3d plot type correctly
+# 注意：axes3d 在代码中未直接使用，但用于正确注册 3D 绘图类型
 from mpl_toolkits.mplot3d import axes3d 
 import matplotlib.pyplot as plt
 import numpy

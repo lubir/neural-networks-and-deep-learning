@@ -2,45 +2,38 @@
 mnist_average_darkness
 ~~~~~~~~~~~~~~~~~~~~~~
 
-A naive classifier for recognizing handwritten digits from the MNIST
-data set.  The program classifies digits based on how dark they are
---- the idea is that digits like "1" tend to be less dark than digits
-like "8", simply because the latter has a more complex shape.  When
-shown an image the classifier returns whichever digit in the training
-data had the closest average darkness.
+一个非常朴素的 MNIST 手写数字分类器：按“图像平均暗度”来分类。
+直觉是“1”通常比“8”更亮，因为后者形状更复杂、笔画更多。
+给定一张图像，分类器返回训练集中平均暗度最接近的数字。
 
-The program works in two steps: first it trains the classifier, and
-then it applies the classifier to the MNIST test data to see how many
-digits are correctly classified.
+程序分两步：先在训练集上计算每个数字的平均暗度，
+再在测试集上评估分类准确率。
 
-Needless to say, this isn't a very good way of recognizing handwritten
-digits!  Still, it's useful to show what sort of performance we get
-from naive ideas."""
+显然这不是一个好的分类方法，但它能展示朴素方法的效果基线。
+"""
 
-#### Libraries
-# Standard library
+#### 依赖库
+# 标准库
 from collections import defaultdict
 
-# My libraries
+# 自定义库
 import mnist_loader
 
 def main():
     training_data, validation_data, test_data = mnist_loader.load_data()
-    # training phase: compute the average darknesses for each digit,
-    # based on the training data
+    # 训练阶段：计算每个数字的平均暗度
     avgs = avg_darknesses(training_data)
-    # testing phase: see how many of the test images are classified
-    # correctly
+    # 测试阶段：统计测试集的正确分类数量
     num_correct = sum(int(guess_digit(image, avgs) == digit)
                       for image, digit in zip(test_data[0], test_data[1]))
     print("Baseline classifier using average darkness of image.")
     print("%s of %s values correct." % (num_correct, len(test_data[1])))
 
 def avg_darknesses(training_data):
-    """ Return a defaultdict whose keys are the digits 0 through 9.
-    For each digit we compute a value which is the average darkness of
-    training images containing that digit.  The darkness for any
-    particular image is just the sum of the darknesses for each pixel."""
+    """返回一个 defaultdict，键为 0~9。
+    对每个数字计算训练集中该数字图像的平均暗度。
+    单张图像的暗度即像素值之和。
+    """
     digit_counts = defaultdict(int)
     darknesses = defaultdict(float)
     for image, digit in zip(training_data[0], training_data[1]):
@@ -52,10 +45,9 @@ def avg_darknesses(training_data):
     return avgs
 
 def guess_digit(image, avgs):
-    """Return the digit whose average darkness in the training data is
-    closest to the darkness of ``image``.  Note that ``avgs`` is
-    assumed to be a defaultdict whose keys are 0...9, and whose values
-    are the corresponding average darknesses across the training data."""
+    """返回训练集平均暗度最接近 image 的数字。
+    avgs 为 defaultdict，键为 0...9，值为对应数字的平均暗度。
+    """
     darkness = sum(image)
     distances = {k: abs(v-darkness) for k, v in avgs.items()}
     return min(distances, key=distances.get)

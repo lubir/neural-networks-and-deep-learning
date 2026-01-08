@@ -2,20 +2,20 @@
 overfitting
 ~~~~~~~~~~~
 
-Plot graphs to illustrate the problem of overfitting.  
+绘制图表以说明过拟合问题。
 """
 
-# Standard library
+# 标准库
 import json
 import random
 import sys
 
-# My library
+# 自定义库
 sys.path.append('../src/')
 import mnist_loader
 import network2
 
-# Third-party libraries
+# 第三方库
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -27,11 +27,9 @@ def main(filename, num_epochs,
          training_accuracy_xmin=0,
          training_set_size=1000, 
          lmbda=0.0):
-    """``filename`` is the name of the file where the results will be
-    stored.  ``num_epochs`` is the number of epochs to train for.
-    ``training_set_size`` is the number of images to train on.
-    ``lmbda`` is the regularization parameter.  The other parameters
-    set the epochs at which to start plotting on the x axis.
+    """filename 为结果保存文件名；num_epochs 为训练轮数；
+    training_set_size 为训练样本数；lmbda 为正则化参数；
+    其余参数用于设置绘图时的 x 轴起点。
     """
     run_network(filename, num_epochs, training_set_size, lmbda)
     make_plots(filename, num_epochs, 
@@ -42,14 +40,10 @@ def main(filename, num_epochs,
                training_set_size)
                        
 def run_network(filename, num_epochs, training_set_size=1000, lmbda=0.0):
-    """Train the network for ``num_epochs`` on ``training_set_size``
-    images, and store the results in ``filename``.  Those results can
-    later be used by ``make_plots``.  Note that the results are stored
-    to disk in large part because it's convenient not to have to
-    ``run_network`` each time we want to make a plot (it's slow).
-
+    """在 training_set_size 个样本上训练 num_epochs 轮，并将结果保存到 filename。
+    保存到磁盘是为了避免每次绘图都重新训练（训练较慢）。
     """
-    # Make results more easily reproducible
+    # 固定随机种子，便于复现
     random.seed(12345678)
     np.random.seed(12345678)
     training_data, validation_data, test_data = mnist_loader.load_data_wrapper()
@@ -72,8 +66,7 @@ def make_plots(filename, num_epochs,
                test_cost_xmin=0, 
                training_accuracy_xmin=0,
                training_set_size=1000):
-    """Load the results from ``filename``, and generate the corresponding
-    plots. """
+    """从 filename 加载结果并生成对应图表。"""
     f = open(filename, "r")
     test_cost, test_accuracy, training_cost, training_accuracy \
         = json.load(f)

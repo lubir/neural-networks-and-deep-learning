@@ -1,27 +1,24 @@
 """multiple_eta
 ~~~~~~~~~~~~~~~
 
-This program shows how different values for the learning rate affect
-training.  In particular, we'll plot out how the cost changes using
-three different values for eta.
-
+演示不同学习率对训练的影响，绘制三种 eta 下代价随训练变化的曲线。
 """
 
-# Standard library
+# 标准库
 import json
 import random
 import sys
 
-# My library
+# 自定义库
 sys.path.append('../src/')
 import mnist_loader
 import network2
 
-# Third-party libraries
+# 第三方库
 import matplotlib.pyplot as plt
 import numpy as np
 
-# Constants
+# 常量
 LEARNING_RATES = [0.025, 0.25, 2.5]
 COLORS = ['#2A6EA6', '#FFCD33', '#FF7033']
 NUM_EPOCHS = 30
@@ -31,12 +28,8 @@ def main():
     make_plot()
 
 def run_networks():
-    """Train networks using three different values for the learning rate,
-    and store the cost curves in the file ``multiple_eta.json``, where
-    they can later be used by ``make_plot``.
-
-    """
-    # Make results more easily reproducible
+    """用三种学习率训练网络，并将代价曲线保存到 ``multiple_eta.json``。"""
+    # 固定随机种子，便于复现
     random.seed(12345678)
     np.random.seed(12345678)
     training_data, validation_data, test_data = mnist_loader.load_data_wrapper()

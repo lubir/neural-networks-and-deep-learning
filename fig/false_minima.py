@@ -2,13 +2,13 @@
 false_minimum
 ~~~~~~~~~~~~~
 
-Plots a function of two variables with many false minima."""
+绘制一个含有多个假极小值的二维函数。
+"""
 
-#### Libraries
-# Third party libraries
+#### 依赖库
+# 第三方库
 from matplotlib.ticker import LinearLocator
-# Note that axes3d is not explicitly used in the code, but is needed
-# to register the 3d plot type correctly
+# 注意：axes3d 在代码中未直接使用，但用于正确注册 3D 绘图类型
 from mpl_toolkits.mplot3d import axes3d 
 import matplotlib.pyplot as plt
 import numpy

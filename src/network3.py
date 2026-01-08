@@ -1,41 +1,32 @@
 """network3.py
 ~~~~~~~~~~~~~~
 
-A Theano-based program for training and running simple neural
-networks.
+基于 Theano 的简单神经网络训练与运行程序。
 
-Supports several layer types (fully connected, convolutional, max
-pooling, softmax), and activation functions (sigmoid, tanh, and
-rectified linear units, with more easily added).
+支持多种层类型（全连接、卷积、池化、softmax）以及激活函数
+（sigmoid、tanh、ReLU，可方便扩展）。
 
-When run on a CPU, this program is much faster than network.py and
-network2.py.  However, unlike network.py and network2.py it can also
-be run on a GPU, which makes it faster still.
+在 CPU 上运行时，该程序比 network.py 和 network2.py 快很多；
+此外还可在 GPU 上运行，速度更快。
 
-Because the code is based on Theano, the code is different in many
-ways from network.py and network2.py.  However, where possible I have
-tried to maintain consistency with the earlier programs.  In
-particular, the API is similar to network2.py.  Note that I have
-focused on making the code simple, easily readable, and easily
-modifiable.  It is not optimized, and omits many desirable features.
+由于基于 Theano，代码结构与 network.py/network2.py 有不少差异；
+但尽可能保持接口一致（尤其与 network2.py 类似）。代码强调简洁、
+易读、易改；未做性能优化，也省略了不少特性。
 
-This program incorporates ideas from the Theano documentation on
-convolutional neural nets (notably,
-http://deeplearning.net/tutorial/lenet.html ), from Misha Denil's
-implementation of dropout (https://github.com/mdenil/dropout ), and
-from Chris Olah (http://colah.github.io ).
+程序参考了 Theano 文档中的卷积网络教程
+（http://deeplearning.net/tutorial/lenet.html），
+Misha Denil 的 dropout 实现（https://github.com/mdenil/dropout），
+以及 Chris Olah 的相关资料（http://colah.github.io）。
 
-Written for Theano 0.6 and 0.7, needs some changes for more recent
-versions of Theano.
-
+最初面向 Theano 0.6/0.7，较新版本需要少量调整。
 """
 
-#### Libraries
-# Standard library
+#### 依赖库
+# 标准库
 import pickle
 import gzip
 
-# Third-party libraries
+# 第三方库
 import numpy as np
 import theano
 import theano.tensor as T
@@ -47,35 +38,32 @@ try:
 except ImportError:
     from theano.tensor.signal import downsample as pool
 
-# Activation functions for neurons
+# 神经元激活函数
 def linear(z): return z
 def ReLU(z): return T.maximum(0.0, z)
 from theano.tensor.nnet import sigmoid
 from theano.tensor import tanh
 
 
-#### Constants
+#### 常量
 GPU = True
 if GPU:
     print("Trying to run under a GPU.  If this is not desired, then modify " +
           "network3.py\nto set the GPU flag to False.")
     try: theano.config.device = 'gpu'
-    except: pass # it's already set
+    except: pass # 已设置时忽略
     theano.config.floatX = 'float32'
 else:
     print("Running with a CPU.  If this is not desired, then the modify " +
           "network3.py to set\nthe GPU flag to True.")
 
-#### Load the MNIST data
+#### 加载 MNIST 数据
 def load_data_shared(filename="../data/mnist.pkl.gz"):
     f = gzip.open(filename, 'rb')
     training_data, validation_data, test_data = pickle.load(f, encoding="latin1")
     f.close()
     def shared(data):
-        """Place the data into shared variables.  This allows Theano to copy
-        the data to the GPU, if one is available.
-
-        """
+        """将数据放入 shared 变量，便于 Theano 在可用时拷贝到 GPU。"""
         shared_x = theano.shared(
             np.asarray(data[0], dtype=theano.config.floatX), borrow=True)
         shared_y = theano.shared(
@@ -83,15 +71,11 @@ def load_data_shared(filename="../data/mnist.pkl.gz"):
         return shared_x, T.cast(shared_y, "int32")
     return [shared(training_data), shared(validation_data), shared(test_data)]
 
-#### Main class used to construct and train networks
+#### 用于构建与训练网络的主类
 class Network(object):
 
     def __init__(self, layers, mini_batch_size):
-        """Takes a list of `layers`, describing the network architecture, and
-        a value for the `mini_batch_size` to be used during training
-        by stochastic gradient descent.
-
-        """
+        """layers 描述网络结构，mini_batch_size 为 SGD 训练使用的批大小。"""
         self.layers = layers
         self.mini_batch_size = mini_batch_size
         self.params = [param for layer in self.layers for param in layer.params]
@@ -108,17 +92,17 @@ class Network(object):
 
     def SGD(self, training_data, epochs, mini_batch_size, eta,
             validation_data, test_data, lmbda=0.0):
-        """Train the network using mini-batch stochastic gradient descent."""
+        """使用 mini-batch SGD 训练网络。"""
         training_x, training_y = training_data
         validation_x, validation_y = validation_data
         test_x, test_y = test_data
 
-        # compute number of minibatches for training, validation and testing
+        # 计算训练/验证/测试的 mini-batch 数量
         num_training_batches = size(training_data)//mini_batch_size
         num_validation_batches = size(validation_data)//mini_batch_size
         num_test_batches = size(test_data)//mini_batch_size
 
-        # define the (regularized) cost function, symbolic gradients, and updates
+        # 定义（含正则）的代价函数、符号梯度与参数更新
         l2_norm_squared = sum([(layer.w**2).sum() for layer in self.layers])
         cost = self.layers[-1].cost(self)+\
                0.5*lmbda*l2_norm_squared/num_training_batches
@@ -126,9 +110,8 @@ class Network(object):
         updates = [(param, param-eta*grad)
                    for param, grad in zip(self.params, grads)]
 
-        # define functions to train a mini-batch, and to compute the
-        # accuracy in validation and test mini-batches.
-        i = T.lscalar() # mini-batch index
+        # 定义训练单个 mini-batch 的函数，以及验证/测试准确率计算函数。
+        i = T.lscalar() # 小批量索引
         train_mb = theano.function(
             [i], cost, updates=updates,
             givens={
@@ -159,7 +142,7 @@ class Network(object):
                 self.x:
                 test_x[i*self.mini_batch_size: (i+1)*self.mini_batch_size]
             })
-        # Do the actual training
+        # 开始训练
         best_validation_accuracy = 0.0
         for epoch in range(epochs):
             for minibatch_index in range(num_training_batches):
@@ -186,35 +169,24 @@ class Network(object):
             best_validation_accuracy, best_iteration))
         print("Corresponding test accuracy of {0:.2%}".format(test_accuracy))
 
-#### Define layer types
+#### 定义层类型
 
 class ConvPoolLayer(object):
-    """Used to create a combination of a convolutional and a max-pooling
-    layer.  A more sophisticated implementation would separate the
-    two, but for our purposes we'll always use them together, and it
-    simplifies the code, so it makes sense to combine them.
-
+    """卷积层与最大池化层的组合。
+    为了简化实现，这里固定将卷积与池化组合在一起。
     """
 
     def __init__(self, filter_shape, image_shape, poolsize=(2, 2),
                  activation_fn=sigmoid):
-        """`filter_shape` is a tuple of length 4, whose entries are the number
-        of filters, the number of input feature maps, the filter height, and the
-        filter width.
-
-        `image_shape` is a tuple of length 4, whose entries are the
-        mini-batch size, the number of input feature maps, the image
-        height, and the image width.
-
-        `poolsize` is a tuple of length 2, whose entries are the y and
-        x pooling sizes.
-
+        """filter_shape 为 4 元组：滤波器数量、输入特征图数量、滤波器高、宽。
+        image_shape 为 4 元组：batch 大小、输入特征图数量、图像高、宽。
+        poolsize 为 2 元组：池化的 y/x 尺寸。
         """
         self.filter_shape = filter_shape
         self.image_shape = image_shape
         self.poolsize = poolsize
         self.activation_fn=activation_fn
-        # initialize weights and biases
+        # 初始化权重与偏置
         n_out = (filter_shape[0]*np.prod(filter_shape[2:])/np.prod(poolsize))
         self.w = theano.shared(
             np.asarray(
@@ -237,7 +209,7 @@ class ConvPoolLayer(object):
             input=conv_out, ds=self.poolsize, ignore_border=True)
         self.output = self.activation_fn(
             pooled_out + self.b.dimshuffle('x', 0, 'x', 'x'))
-        self.output_dropout = self.output # no dropout in the convolutional layers
+        self.output_dropout = self.output # 卷积层不使用 dropout
 
 class FullyConnectedLayer(object):
 
@@ -246,7 +218,7 @@ class FullyConnectedLayer(object):
         self.n_out = n_out
         self.activation_fn = activation_fn
         self.p_dropout = p_dropout
-        # Initialize weights and biases
+        # 初始化权重与偏置
         self.w = theano.shared(
             np.asarray(
                 np.random.normal(
@@ -270,7 +242,7 @@ class FullyConnectedLayer(object):
             T.dot(self.inpt_dropout, self.w) + self.b)
 
     def accuracy(self, y):
-        "Return the accuracy for the mini-batch."
+        "返回 mini-batch 的准确率。"
         return T.mean(T.eq(y, self.y_out))
 
 class SoftmaxLayer(object):
@@ -279,7 +251,7 @@ class SoftmaxLayer(object):
         self.n_in = n_in
         self.n_out = n_out
         self.p_dropout = p_dropout
-        # Initialize weights and biases
+        # 初始化权重与偏置
         self.w = theano.shared(
             np.zeros((n_in, n_out), dtype=theano.config.floatX),
             name='w', borrow=True)
@@ -297,17 +269,17 @@ class SoftmaxLayer(object):
         self.output_dropout = softmax(T.dot(self.inpt_dropout, self.w) + self.b)
 
     def cost(self, net):
-        "Return the log-likelihood cost."
+        "返回对数似然代价。"
         return -T.mean(T.log(self.output_dropout)[T.arange(net.y.shape[0]), net.y])
 
     def accuracy(self, y):
-        "Return the accuracy for the mini-batch."
+        "返回 mini-batch 的准确率。"
         return T.mean(T.eq(y, self.y_out))
 
 
-#### Miscellanea
+#### 杂项
 def size(data):
-    "Return the size of the dataset `data`."
+    "返回数据集 data 的大小。"
     return data[0].get_value(borrow=True).shape[0]
 
 def dropout_layer(layer, p_dropout):

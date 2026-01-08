@@ -1,14 +1,12 @@
 """generate_gradient.py
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-Use network2 to figure out the average starting values of the gradient
-error terms \delta^l_j = \partial C / \partial z^l_j = \partial C /
-\partial b^l_j.
-
+使用 network2 计算梯度误差项的平均初始值：
+δ^l_j = ∂C/∂z^l_j = ∂C/∂b^l_j。
 """
 
-#### Libraries
-# Standard library
+#### 依赖库
+# 标准库
 import json
 import math
 import random
@@ -17,19 +15,19 @@ import sys
 from functools import reduce
 sys.path.append("../src/")
 
-# My library
+# 自定义库
 import mnist_loader
 import network2
 
-# Third-party libraries
+# 第三方库
 import matplotlib.pyplot as plt
 import numpy as np
 
 def main():
-    # Load the data
+    # 加载数据
     full_td, _, _ = mnist_loader.load_data_wrapper()
-    td = full_td[:1000] # Just use the first 1000 items of training data
-    epochs = 500 # Number of epochs to train for
+    td = full_td[:1000] # 仅使用前 1000 个训练样本
+    epochs = 500 # 训练轮数
 
     print("\nTwo hidden layers:")
     net = network2.Network([784, 30, 30, 10])

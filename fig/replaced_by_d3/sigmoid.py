@@ -2,7 +2,8 @@
 sigmoid
 ~~~~~~~
 
-Plots a graph of the sigmoid function."""
+绘制 sigmoid 函数曲线。
+"""
 
 import numpy
 import matplotlib.pyplot as plt

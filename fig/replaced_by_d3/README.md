@@ -1,6 +1,4 @@
-# Replaced by d3 directory
+# 被 d3 替换的目录
 
-This directory contains python code which generated png figures which
-were later replaced by d3 in the live version of the site.  They've
-been preserved here on the off chance that they may be of use at some
-point in the future.
+此目录包含用于生成 png 图的 Python 代码，但在网站在线版本中
+已被 d3 替换。这里保留这些代码，以备未来可能用得上。

@@ -2,10 +2,11 @@
 misleading_gradient_contours
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Plots the contours of the function from misleading_gradient.py"""
+绘制 misleading_gradient.py 中函数的等高线图。
+"""
 
-#### Libraries
-# Third party libraries
+#### 依赖库
+# 第三方库
 import matplotlib.pyplot as plt
 import numpy
 

@@ -2,14 +2,12 @@
 backprop_magnitude_nabla
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-Using backprop2 I constructed a 784-30-30-30-30-30-10 network to classify
-MNIST data.  I ran ten mini-batches of size 100, with eta = 0.01 and
-lambda = 0.05, using:
+使用 backprop2 构建 784-30-30-30-30-30-10 的网络来分类 MNIST。
+运行 10 个大小为 100 的 mini-batch，eta=0.01，lambda=0.05：
 
 net.SGD(otd[:1000], 1, 100, 0.01, 0.05,
 
-I obtained the following norms for the (unregularized) nabla_w for the
-respective mini-batches:
+得到各 mini-batch 的（未正则化）nabla_w 范数如下：
 
 [0.90845722175923671, 2.8852730656073566, 10.696793986223632, 37.75701921183488, 157.7365422527995, 304.43990075227839]
 [0.22493835119537842, 0.6555126517964851, 2.6036801277234076, 11.408825365731225, 46.882319190445472, 70.499637502698221]
@@ -22,20 +20,16 @@ respective mini-batches:
 [0.095372080184163904, 0.15854489503205446, 0.70244235144444678, 2.6294803575724157, 10.427062019753425, 24.309420272033819]
 [0.096453131000155692, 0.13574642196947601, 0.53551377709415471, 2.0247466793066895, 9.4503978546018068, 21.73772148470092]
 
-Note that results are listed in order of layer.  They clearly show how
-the magnitude of nabla_w decreases as we go back through layers.
+结果按层次顺序排列，可以清楚看到 nabla_w 的幅度在越往前的层越小。
 
-In this program I take min-batches 7, 8, 9 as representative and plot
-them.  I omit the results from the first and final layers since they
-correspond to 784 input neurons and 10 output neurons, not 30 as in
-the other layers, making it difficult to compare results.
+此处选取第 7、8、9 个 mini-batch 作为代表绘图，并省略首层和末层，
+因为它们分别对应 784 个输入与 10 个输出，难以与中间层（30）比较。
 
-Note that I haven't attempted to preserve the whole workflow here. It
-involved some minor hacking around with backprop2, which messed up
-that code.  That's why I've simply put the results in by hand below.
+这里未完整保留原实验流程，因为对 backprop2 做过一些修改，
+导致代码被扰乱，所以直接把结果手工写在下方。
 """
 
-# Third-party libraries
+# 第三方库
 import matplotlib.pyplot as plt
 
 nw1 = [0.129173436407863, 0.4242933114455002, 

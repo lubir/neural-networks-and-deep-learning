@@ -2,32 +2,31 @@
 serialize_images_to_json
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-Utility to serialize parts of the training and validation data to JSON, 
-for use with Javascript.  """
+将训练/验证数据的部分样本序列化为 JSON，供 JavaScript 使用。
+"""
 
-#### Libraries
-# Standard library
+#### 依赖库
+# 标准库
 import json 
 import sys
 
-# My library
+# 自定义库
 sys.path.append('../src/')
 import mnist_loader
 
-# Third-party libraries
+# 第三方库
 import numpy as np
 
 
-# Number of training and validation data images to serialize
+# 要序列化的训练/验证样本数量
 NTD = 1000
 NVD = 100
 
 training_data, validation_data, test_data = mnist_loader.load_data_wrapper()
 
 def make_data_integer(td):
-    # This will be slow, due to the loop.  It'd be better if numpy did
-    # this directly.  But numpy.rint followed by tolist() doesn't
-    # convert to a standard Python int.
+    # 这里循环会比较慢；如果 numpy 能直接完成会更好。
+    # 但 numpy.rint 后接 tolist() 仍不会转成标准 Python int。
     return [int(x) for x in (td*256).reshape(784).tolist()]
 
 data = {"training": [
@@ -42,5 +41,4 @@ data = {"training": [
 f = open("data_1000.json", "w")
 json.dump(data, f)
 f.close()
-
 

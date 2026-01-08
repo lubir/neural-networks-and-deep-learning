@@ -2,7 +2,8 @@
 tanh
 ~~~~
 
-Plots a graph of the tanh function."""
+绘制 tanh 函数曲线。
+"""
 
 import numpy as np
 import matplotlib.pyplot as plt

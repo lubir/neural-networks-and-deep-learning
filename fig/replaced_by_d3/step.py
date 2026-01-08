@@ -2,7 +2,8 @@
 step
 ~~~~~~~
 
-Plots a graph of a step function."""
+绘制阶跃函数曲线。
+"""
 
 import numpy
 import matplotlib.pyplot as plt

@@ -1,25 +1,22 @@
 """weight_initialization 
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-This program shows how weight initialization affects training.  In
-particular, we'll plot out how the classification accuracies improve
-using either large starting weights, whose standard deviation is 1, or
-the default starting weights, whose standard deviation is 1 over the
-square root of the number of input neurons.
-
+展示权重初始化对训练的影响。对比两种初始化：
+1) 标准差为 1 的“大权重”初始化；
+2) 标准差为 1/sqrt(输入神经元数量) 的默认初始化。
 """
 
-# Standard library
+# 标准库
 import json
 import random
 import sys
 
-# My library
+# 自定义库
 sys.path.append('../src/')
 import mnist_loader
 import network2
 
-# Third-party libraries
+# 第三方库
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -28,12 +25,8 @@ def main(filename, n, eta):
     make_plot(filename)
                        
 def run_network(filename, n, eta):
-    """Train the network using both the default and the large starting
-    weights.  Store the results in the file with name ``filename``,
-    where they can later be used by ``make_plots``.
-
-    """
-    # Make results more easily reproducible
+    """用默认与大权重两种初始化训练网络，并将结果保存到 filename。"""
+    # 固定随机种子，便于复现
     random.seed(12345678)
     np.random.seed(12345678)
     training_data, validation_data, test_data = mnist_loader.load_data_wrapper()
@@ -58,10 +51,7 @@ def run_network(filename, n, eta):
     f.close()
 
 def make_plot(filename):
-    """Load the results from the file ``filename``, and generate the
-    corresponding plot.
-
-    """
+    """从 filename 读取结果并绘制图表。"""
     f = open(filename, "r")
     results = json.load(f)
     f.close()
@@ -69,7 +59,7 @@ def make_plot(filename):
         "default_weight_initialization"]
     large_vc, large_va, large_tc, large_ta = results[
         "large_weight_initialization"]
-    # Convert raw classification numbers to percentages, for plotting
+    # 将分类正确数转换为百分比以便绘图
     default_va = [x/100.0 for x in default_va]
     large_va = [x/100.0 for x in large_va]
     fig = plt.figure()

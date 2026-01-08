@@ -1,19 +1,17 @@
-# Code samples for "Neural Networks and Deep Learning"
+# 《Neural Networks and Deep Learning》代码示例
 
-This repository contains code samples for my book on ["Neural Networks
-and Deep Learning"](http://neuralnetworksanddeeplearning.com).
+本仓库包含《Neural Networks and Deep Learning》一书的示例代码：
+http://neuralnetworksanddeeplearning.com
 
-The code is written for Python 3.8+.
+代码面向 Python 3.8+。
 
-The program `src/network3.py` uses Theano (via the `theano-pymc` fork).
-If you prefer to stay on the original Theano, use `theano==1.0.5` and
-adjust imports if needed.
+`src/network3.py` 使用 Theano（通过 `theano-pymc` 分支）。
+若希望继续使用原版 Theano，可使用 `theano==1.0.5` 并按需调整导入。
 
-As the code is written to accompany the book, I don't intend to add
-new features. However, bug reports are welcome, and you should feel
-free to fork and modify the code.
+本代码用于配合书籍，不计划增加新特性。欢迎提交 bug 报告，
+也可以自行 fork 并修改。
 
-## License
+## 许可证
 
 MIT License
 

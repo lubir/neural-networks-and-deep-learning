@@ -1,27 +1,25 @@
 """more_data
 ~~~~~~~~~~~~
 
-Plot graphs to illustrate the performance of MNIST when different size
-training sets are used.
-
+绘制不同训练集规模下 MNIST 的性能曲线。
 """
 
-# Standard library
+# 标准库
 import json
 import random
 import sys
 
-# My library
+# 自定义库
 sys.path.append('../src/')
 import mnist_loader
 import network2
 
-# Third-party libraries
+# 第三方库
 import matplotlib.pyplot as plt
 import numpy as np
 from sklearn import svm
 
-# The sizes to use for the different training sets
+# 不同训练集规模
 SIZES = [100, 200, 500, 1000, 2000, 5000, 10000, 20000, 50000] 
 
 def main():
@@ -30,7 +28,7 @@ def main():
     make_plots()
                        
 def run_networks():
-    # Make results more easily reproducible
+    # 固定随机种子，便于复现
     random.seed(12345678)
     np.random.seed(12345678)
     training_data, validation_data, test_data = mnist_loader.load_data_wrapper()

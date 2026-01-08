@@ -2,15 +2,15 @@
 pca_limitations
 ~~~~~~~~~~~~~~~
 
-Plot graphs to illustrate the limitations of PCA.
+绘制图表说明 PCA 的局限性。
 """
 
-# Third-party libraries
+# 第三方库
 from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
 import numpy as np
 
-# Plot just the data
+# 仅绘制数据点
 fig = plt.figure()
 ax = fig.gca(projection='3d')
 z = np.linspace(-2, 2, 20)
@@ -20,7 +20,7 @@ y = np.cos(theta)+0.03*np.random.randn(20)
 ax.plot(x, y, z, 'ro')
 plt.show()
 
-# Plot the data and the helix together
+# 同时绘制数据与螺旋线
 fig = plt.figure()
 ax = fig.gca(projection='3d')
 z_helix = np.linspace(-2, 2, 100)
