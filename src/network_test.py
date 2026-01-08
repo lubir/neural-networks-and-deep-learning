@@ -1,7 +1,7 @@
 """
 network_test - 简单的网络测试工具。
-使用 mnist_loader.py 加载 MNIST 数据集，
-使用 network.py 训练和测试神经网络。
+1、使用 mnist_loader.py 加载 MNIST 数据集，
+2、使用 network.py 训练和测试神经网络。
 """
 
 import argparse
