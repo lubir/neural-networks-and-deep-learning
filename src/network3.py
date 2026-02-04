@@ -32,7 +32,14 @@ import theano
 import theano.tensor as T
 from theano.tensor.nnet import conv2d
 from theano.tensor.nnet import softmax
-from theano.tensor import shared_randomstreams
+try:
+    from theano.tensor.random.utils import RandomStream as _RandomStreams
+except Exception:
+    try:
+        from theano.tensor.shared_randomstreams import RandomStreams as _RandomStreams
+    except Exception:
+        from theano.tensor import shared_randomstreams as _shared_randomstreams
+        _RandomStreams = _shared_randomstreams.RandomStreams
 try:
     from theano.tensor.signal import pool
 except ImportError:
@@ -283,9 +290,10 @@ def size(data):
     return data[0].get_value(borrow=True).shape[0]
 
 def dropout_layer(layer, p_dropout):
-    srng = shared_randomstreams.RandomStreams(
+    srng = _RandomStreams(
         np.random.RandomState(0).randint(999999))
-    mask = srng.binomial(n=1, p=1-p_dropout, size=layer.shape)
+    # Newer Theano RNGs don't accept keyword "n"; keep positional for compatibility.
+    mask = srng.binomial(1, 1-p_dropout, size=layer.shape)
     return layer*T.cast(mask, theano.config.floatX)
 
 def max_pool_2d(input, ds, ignore_border=True):
